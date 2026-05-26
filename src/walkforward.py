@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
-from dbscan import DBSCANDetector
-from kmeans import FEATURES, KMEANSDetector
-from market import compute_market
+from src.dbscan import DBSCANDetector
+from src.kmeans import FEATURES, KMEANSDetector
+from src.market import compute_market
 import os
+import argparse
 
 def run_walkforward(full_df, kmeans_detector, dbscan_detector):
     # 1. split
@@ -63,25 +64,33 @@ def save_outputs(final_df):
     market_days.to_csv("/home/p3r5eus/Documents/Stock Market Anomaly Detection/Stratex/output/market_days/market_days.csv", index=False)
 
 if __name__ == "__main__":
-    # 1. load + prep
+
+    '''
+    for input : python -m src.walkforward --universe QQQ,AAPL,MSFT,NVDA,AMZN,TSLA
+
+    we will output : 2 csvs in the output folder:
+    - output/anomaly_cards/anomaly_card.csv
+    - output/market_days/market_days.csv
+    '''
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--universe",type = str,default="QQQ,AAPL,MSFT,NVDA,AMZN,TSLA")
+    args = parser.parse_args()
+
+    tickers = [t.strip() for t in args.universe.split(",")]
     full_df = pd.read_csv("/home/p3r5eus/Documents/Stock Market Anomaly Detection/Stratex/data/processed.csv")
-    full_df["date"] = pd.to_datetime(full_df["date"])
     full_df = compute_market(full_df)
+    full_df["date"] = pd.to_datetime(full_df["date"])
+    full_df = full_df[full_df["ticker"].isin(tickers)].copy()
 
     train_df = full_df[full_df["date"].dt.year == 2018].copy()
 
-    # 2. fit kmeans
-    # hint: use find_best_k to pick k, or hardcode after tuning
-    kmeans_detector = KMEANSDetector(k=3, q=95)
+    kmeans_detector = KMEANSDetector(k=3, q=95)   
     kmeans_detector.fit(train_df.dropna(subset=FEATURES))
 
-    # 3. fit dbscan scaler
     dbscan_detector = DBSCANDetector(eps=0.5, min_samples=10)
     dbscan_detector.fit_scaler(train_df.dropna(subset=FEATURES))
 
-    # 4. run
     final_df = run_walkforward(full_df, kmeans_detector, dbscan_detector)
 
-    # 5. save
     save_outputs(final_df)
-    print("Done — outputs written.")
+    print("Walk-forward complete. Outputs saved to output/ folder.")

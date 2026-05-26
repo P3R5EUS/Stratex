@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from rule_based import add_anomaly
+from src.rule_based import add_anomaly
 
 def add_market_ret(df):
     df = df.copy()

@@ -3,7 +3,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import numpy as np
 import pandas as pd
-from market import compute_market
+from src.market import compute_market
 import matplotlib.pyplot as plt
 
 FEATURES = ["ret_z", "vol_z", "range_pct"]

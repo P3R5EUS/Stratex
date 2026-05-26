@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
-from market import compute_market
+from src.market import compute_market
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import DBSCAN
