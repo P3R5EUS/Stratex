@@ -64,29 +64,30 @@ class DBSCANDetector:
         result["dbscan_flag"] = result["dbscan_flag"].fillna(0).astype(int)
         
         return result
-    
-full_df = pd.read_csv("/home/p3r5eus/Documents/Stock Market Anomaly Detection/Stratex/data/processed.csv")
-full_df["date"] = pd.to_datetime(full_df["date"])
-full_df = compute_market(full_df)
 
-train_df = full_df[full_df["date"].dt.year == 2018].copy()
-val_df   = full_df[full_df["date"].dt.year == 2019].copy()
+#TESTING    
+# full_df = pd.read_csv("/home/p3r5eus/Documents/Stock Market Anomaly Detection/Stratex/data/processed.csv")
+# full_df["date"] = pd.to_datetime(full_df["date"])
+# full_df = compute_market(full_df)
 
-# step 1 — find best eps visually
-X_train_scaled = StandardScaler().fit_transform(
-    train_df[FEATURES].dropna()
-)
-find_best_eps(X_train_scaled, min_samples=10)
-# look at the plot → pick eps at the elbow
-# step 2 — fit scaler
-detector = DBSCANDetector(eps=0.5, min_samples=10)  # replace 0.5 with your elbow value
-detector.fit_scaler(train_df.dropna(subset=FEATURES))
+# train_df = full_df[full_df["date"].dt.year == 2018].copy()
+# val_df   = full_df[full_df["date"].dt.year == 2019].copy()
 
-# step 3 — score one month first to sanity check
-jan_2019 = val_df[val_df["date"].dt.month == 1].copy()
+# # step 1 — find best eps visually
+# X_train_scaled = StandardScaler().fit_transform(
+#     train_df[FEATURES].dropna()
+# )
+# find_best_eps(X_train_scaled, min_samples=10)
+# # look at the plot → pick eps at the elbow
+# # step 2 — fit scaler
+# detector = DBSCANDetector(eps=0.5, min_samples=10) 
+# detector.fit_scaler(train_df.dropna(subset=FEATURES))
 
-scored = detector.score_block(train_df, jan_2019)
+# # step 3 — score one month first to sanity check
+# jan_2019 = val_df[val_df["date"].dt.month == 1].copy()
 
-print(scored["dbscan_flag"].value_counts())
-flag_rate = scored["dbscan_flag"].mean()
-print(f"Jan 2019 flag rate: {flag_rate:.2%}")  # target 2-8%
+# scored = detector.score_block(train_df, jan_2019)
+
+# print(scored["dbscan_flag"].value_counts())
+# flag_rate = scored["dbscan_flag"].mean()
+# print(f"Jan 2019 flag rate: {flag_rate:.2%}")  # target 2-8%
