@@ -90,8 +90,8 @@ Always use **Adj Close** for returns — accounts for splits and dividends.
 ```
 stock-anomaly/
 ├── data/
-│   ├── raw/               # Kaggle CSVs (one per ticker)
-│   └── processed/         # Cleaned merged CSV
+│   ├── stocks/               # Kaggle CSVs (one per ticker)
+│   └── processed.csv        # Cleaned merged CSV
 ├── src/
 │   ├── data_loader.py
 │   ├── feature.py         # ret_z, vol_z, range_pct
@@ -105,10 +105,6 @@ stock-anomaly/
 ├── outputs/
 │   ├── anomaly_cards/     # anomaly_card.csv
 │   └── market_days/       # market_days.csv
-├── notebooks/
-│   ├── 01_eda.ipynb
-│   ├── 02_feature_check.ipynb
-│   └── 03_model_tuning.ipynb
 ├── README.md
 └── requirements.txt
 ```
